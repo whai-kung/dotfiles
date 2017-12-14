@@ -6,10 +6,12 @@ alias ...="cd ../.."
 alias ....="cd ../../.."
 alias .....="cd ../../../.."
 alias ~="cd ~" # `cd` is probably faster to type though
-alias -- -="cd -"
 
 # Exit
 alias :q="exit"
+
+# Find history
+alias hg='history | grep'
 
 # Detect which `ls` flavor is in use
 if ls --color > /dev/null 2>&1; then # GNU `ls`
@@ -52,11 +54,6 @@ alias update='sudo softwareupdate -i -a; brew update; brew upgrade; brew cleanup
 
 # Google Chrome
 alias chrome='/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome'
-
-# IP addresses
-alias ip="dig +short myip.opendns.com @resolver1.opendns.com"
-alias localip="ipconfig getifaddr en0"
-alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
 
 # Show active network interfaces
 alias ifactive="ifconfig | pcregrep -M -o '^[^\t:]+:([^\n]|\n\t)*status: active'"
@@ -157,8 +154,15 @@ alias reload="exec $SHELL -l"
 alias path='echo -e ${PATH//:/\\n}'
 
 # Vim
-alias vi='/usr/local/bin/vim'
+#alias vim='/path/to/MacVim.app/Contents/MacOS/Vim'
+#alias vi='/usr/local/bin/mvim'
+alias vi='vim'
+
+# Compare
+alias compare='vimdiff'
 
 # IP address
-alias myip="ifconfig en0 | awk '{print $2}' | grep -o --max-count=1 '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*'"
+alias myip="ifconfig en0 | awk '{print $3}' | grep -o --max-count=1 '[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*'"
 alias netip="dig +short myip.opendns.com @resolver1.opendns.com"
+alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+
