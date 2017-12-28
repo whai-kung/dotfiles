@@ -63,6 +63,12 @@ set softtabstop=4   " backspace
 set shiftwidth=4    " indent width
 set smarttab		" insert tabs on the start of a line according to shiftwidth, not tabstop
 
+autocmd filetype javascript set sw=2 ts=2 expandtab
+
+" Mako/HTML
+autocmd BufNewFile,BufRead *.mako,*.mak,*.jinja2 setlocal ft=html
+autocmd FileType html,xhtml,xml,css setlocal expandtab shiftwidth=2 tabstop=2
+
 "-----------------
 " Plugin settings
 "-----------------
@@ -80,6 +86,32 @@ autocmd BufWinEnter * NERDTreeMirror
 " YouComplateMe
 let g:ycm_min_num_of_chars_for_completion = 1
 let g:ycm_max_num_candidates = 30
+
+" syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_aggregate_errors = 1
+
+" vim-json
+augroup json_autocmd
+  autocmd!
+  autocmd FileType json set autoindent
+  autocmd FileType json set formatoptions=tcq2l
+  autocmd FileType json set textwidth=78 shiftwidth=2
+  autocmd FileType json set softtabstop=2 tabstop=8
+  autocmd FileType json set expandtab
+  autocmd FileType json set foldmethod=syntax
+augroup END
+
+" shortcut key for syntastic
+map <PageDown> :lnext<CR>
+map <PageUp> :lprevious<CR>
 
 " Enable omni completion.
 " autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
