@@ -1,301 +1,159 @@
-set shell=/bin/bash
-set path=.,,** " when searching the path, look in . (current directory) and ** (every direcory recursively starting at current)
+" encoding dectection
+set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
 
-" ************************************************************************
-" P A C K A G E S
-"
-filetype off                   " required!
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" Vundle is the vim package manager.
-" Bundles are usually of the form user/repo (https://github.com/user/repo)
-" let Vundle manage Vundle
+" Eliminating delays on ESC
+set timeoutlen=1000 ttimeoutlen=0
 
-" required by vundle
-    Plugin 'gmarik/Vundle.vim'
-    Plugin 'L9'
-    
-" sidebar filesystem navigation
-    " \n to open/close, navigate to it like a normal pane
-    Plugin 'scrooloose/nerdtree'
-   " makes nerdtree consistent across tabs
-    Plugin 'jistr/vim-nerdtree-tabs'
+" turn filetype detection off and, even if it's not strictly
+" necessary, disable loading of indent scripts and filetype plugins
+filetype off
+filetype plugin indent off
 
-" tmux integration
-" makes ctrl-hjkl move between both vim and tmux panes
-    Plugin 'christoomey/vim-tmux-navigator'
+" pathogen runntime injection and help indexing
+call pathogen#infect()
+call pathogen#helptags()
 
-" commenting: \cs for comment, \cu for uncomment
-    Plugin 'scrooloose/nerdcommenter'
-
-" :UT to open a tree of undo paths for the current pane.
-    Plugin 'mbbill/undotree'
-
-" for fuzzyfinding files/contents
-    " automatically binds to ctrl-p, rebound to ctrl-s later
-    Plugin 'kien/ctrlp.vim'
-
-" tab completion everywhere
-    Plugin 'ervandew/supertab'
-
-" Linting (error checking) and syntax highlighting
-    "Plugin 'scrooloose/syntastic'
-    Plugin 'altercation/vim-colors-solarized'
-    Plugin 'plasticboy/vim-markdown'
-    Plugin 'Glench/Vim-Jinja2-Syntax'
-    Plugin 'groenewege/vim-less'
-    Plugin 'kien/rainbow_parentheses.vim'
-
-" Linting (error checking) and syntax highlighting
-    Plugin 'digitaltoad/vim-jade'
-    Plugin 'godlygeek/tabular'
-    " :Tab /= on the next line would do:
-    " a = 'foo';   => a       = 'foo';
-    " bortlty = 1; => bortlty = 1;
-
-" Clojure
-    "Plugin 'guns/vim-clojure-static'
-    "Plugin 'tpope/vim-fireplace'
-    "Plugin 'vim-scripts/paredit.vim'
-
-
-" Git plugin for vim
-    Plugin 'tpope/vim-fugitive'
-
-" js, jsx, and json highlighting / linting:
-    Plugin 'pangloss/vim-javascript'
-    Plugin 'elzr/vim-json'
-    "Plugin 'mxw/vim-jsx'
-    "Plugin 'jordwalke/JSXVimHint'
-    Plugin 'maksimr/vim-jsbeautify' 
-
-" for connecting to a db directly from vim
-" Plugin 'vim-scripts/dbext.vim'
-
-"seem useful:
-    "Plugin 'mattn/emmet-vim'
-    "Plugin 'garbas/vim-snipmate'
-    "Plugin 'honza/vim-snippets'
-     
-call vundle#end()
-filetype plugin indent on     " required!
-
-
-
-" ************************************************************************
-" making the interface friendly. Mouse always on, numbered lines, etc
-"
-set backspace=indent,eol,start " allow backspacing over everything in insert mode
-set scrolloff=5
-set nu               "numbered lines
-set ruler            "show cursor
-set showcmd          "partial commands
-set incsearch        "incremental search 
-set ignorecase
-set history=10000
-set scs              " smart search (override 'ic' when pattern has uppers)
-set laststatus=2     " Always display a status line at the bottom of the window
-set showmatch        " showmatch: Show the matching bracket for the last ')'
-set notildeop        " allow tilde (~) to act as an operator -- ~w, etc.
-set mouse=a " use the mouse whenever, wherever
-set mousehide
-set clipboard=unnamedplus
-set foldmethod=indent
+" turn filetype detection, indent scripts and filetype plugins on
+" and syntax highlighting too
+filetype plugin indent on
 syntax on
 
-"tab movement (ctrl-n for next tab, ctrl-p for previous)
-    map <c-n> gt
-    map <c-p> gT
+"--------
+" Vim UI
+"--------
+" color scheme
+set background=dark
+color solarized
 
-"enter in normal mode to insert in new line
-    nmap <Enter> o<Esc>
+" search
+set incsearch
+set ignorecase
+set smartcase
+set hlsearch
+nmap <silent> ,/ :nohlsearch<CR>
 
-" good config for programming
-func! CodeMode()
-	set tabstop=4
-	set shiftwidth=4
-	set softtabstop=4
-	set expandtab
-	set autoindent
-	set foldmethod=indent
-	set nopaste
-endfu
-com! CM call CodeMode()
-call CodeMode()
+" editor settings
+set nobackup													  " do not keep backup files
+set noswapfile													  " do not write swap file
+set history=1000
+set nocompatible
+set nofoldenable                                                  " disable folding"
+set confirm                                                       " prompt when existing from an unsaved file
+set backspace=indent,eol,start                                    " More powerful backspacing
+set report=0                                                      " always report number of lines changed
+set wrap                                                          " wrap lines
+set scrolloff=5                                                   " 5 lines above/below cursor when scrolling
+set number                                                        " show line numbers
+set showmatch                                                     " show matching bracket (briefly jump)
+set showcmd                                                       " show typed command in status bar
+set title                                                         " show file in titlebar
+set laststatus=2                                                  " use 2 lines for the status bar
+set matchtime=2                                                   " show matching bracket for 0.2 seconds
+set matchpairs+=<:>                                               " specially for html
 
+" Copy
+set clipboard=unnamed
+noremap <Leader>y "*y
+noremap <Leader>p "*p
+noremap <Leader>Y "+y
+noremap <Leader>P "+p
 
-" Indendation, colorscheme, etc
-    set t_Co=256
-    colorscheme solarized "altercation/vim-colors-solarized
-    set background=dark
-    "visible whitespace
-    set list
-    set listchars=tab:>.
-    set nolist wrap linebreak breakat&vim    
-" Set status line
-set statusline=[%02n]\ %f\ %{fugitive#statusline()}\ %(\[%M%R%H]%)%=\ %4l,%02c%2V\ %P%*
+" Default Indentation
+set autoindent
+set smartindent     " indent when
+set tabstop=4       " tab width
+set softtabstop=4   " backspace
+set shiftwidth=4    " indent width
+set smarttab		" insert tabs on the start of a line according to shiftwidth, not tabstop
 
-" kien/rainbow_parentheses.vim - theme that should show up on all backgrounds
-let g:rbpt_colorpairs = [
-  \ [ '13', '#6c71c4'],
-  \ [ '5',  '#d33682'],
-  \ [ '1',  '#dc322f'],
-  \ [ '9',  '#cb4b16'],
-  \ [ '3',  '#b58900'],
-  \ [ '2',  '#859900'],
-  \ [ '6',  '#2aa198'],
-  \ [ '4',  '#268bd2'],
-  \ ]
-augroup rainbow_parentheses
-  au!
-  au VimEnter * RainbowParenthesesActivate
-  au BufEnter * RainbowParenthesesLoadRound
-  au BufEnter * RainbowParenthesesLoadSquare
-  au BufEnter * RainbowParenthesesLoadBraces
+autocmd filetype javascript set sw=2 ts=2 expandtab
+
+" Mako/HTML
+autocmd BufNewFile,BufRead *.mako,*.mak,*.jinja2 setlocal ft=html
+autocmd FileType html,xhtml,xml,css setlocal expandtab shiftwidth=2 tabstop=2
+
+"-----------------
+" Plugin settings
+"-----------------
+"" Auto complete code
+
+" Rainbow Parentheses
+let g:rainbow_active = 1
+
+" Nerd Tree
+let NERDTreeAutoDeleteBuffer=1
+let g:NERDTreeWinSize=25
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+autocmd BufWinEnter * NERDTreeMirror
+
+" YouComplateMe
+let g:ycm_min_num_of_chars_for_completion = 1
+let g:ycm_max_num_candidates = 30
+
+" vim-syntastic
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 0
+let g:syntastic_aggregate_errors = 1
+
+" vim-json
+augroup json_autocmd
+  autocmd!
+  autocmd FileType json set autoindent
+  autocmd FileType json set formatoptions=tcq2l
+  autocmd FileType json set textwidth=78 shiftwidth=2
+  autocmd FileType json set softtabstop=2 tabstop=8
+  autocmd FileType json set expandtab
+  autocmd FileType json set foldmethod=syntax
 augroup END
 
+" shortcut key for syntastic
+map <PageDown> :lnext<CR>
+map <PageUp> :lprevious<CR>
 
-" ************************************************************************
-" COMMANDS
-"
+" Enable omni completion.
+" autocmd FileType css setlocal omnifunc=csscomplete#CompleteCSS
+" autocmd FileType html,markdown setlocal omnifunc=htmlcomplete#CompleteTags
+" autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
+" autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
+" autocmd FileType c setlocal omnifunc=ccomplete#Complete
 
-"switch to directory of current file
-    command! CD cd %:p:h
+" Disable beep and flash with an autocmd
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
 
-" Commands and mappings for :Explore, searching, etc
-    let g:explVertical=1    " open vertical split winow
-    let g:explSplitRight=1  " Put new window to the right of the explorer
-    let g:explStartRight=0  " new windows go to right of explorer window
-    map <Leader>e :Explore<cr>
-    map <Leader>s :Sexplore<cr> 
+" ctrlp
+" set wildignore+=*/tmp/*,*.so,*.o,*.a,*.obj,*.swp,*.zip,*.pyc,*.pyo,*.class,.DS_Store  " MacOSX/Linux
+" let g:ctrlp_custom_ignore = '\.git$\|\.hg$\|\.svn$'
 
-" kien/ctrlp.vim
-    let g:ctrlp_map = '<c-s>'
+" Keybindings for plugin toggle
+" nnoremap <F2> :set invpaste paste?<CR>
+" set pastetoggle=<F2>
+set paste
 
-" pressing < or > will let you indent/unident selected lines
-    vnoremap < <gv
-    vnoremap > >gv
+map <F4> :NERDTreeToggle<CR>
 
-" Don't use Ex mode, use Q for formatting
-    map Q gq
+" map <F12> :MouseToggle<CR>		" Activated via plugin already
+nmap <D-/> :
 
-" Make tab in v mode work like I think it should (keep highlighting):
-    vmap <tab> >gv
-    vmap <s-tab> <gv
+"------------------
+" Useful Functions
+"------------------
+" easier navigation between split windows
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
 
-" Some timestamp stuff
-    " map ,L mz1G/Last modified:/e<Cr>CYDATETIME<Esc>`z
-    map ,L    :let @z=TimeStamp()<Cr>"zpa
-    map ,datetime :let @z=strftime("%d %b %Y %X")<Cr>"zpa
-    map ,date :let @z=strftime("%d %b %Y")<Cr>"zpa
+" navigation batween tab
+map <C-\> :tabn<CR>
+map <C-]> :tabp<CR>
+map <C-t> :tabnew<CR>
 
-    " first add a function that returns a time stamp in the desired format 
-    if !exists("*TimeStamp")
-        fun TimeStamp()
-            return strftime("%d %b %Y %X")
-        endfun
-    endif
+" nmap <silent> <leader>sv :so $MYVIMRC<CR>
 
-
-func! YankPage()
-	let linenumber = line(".")
-	normal ggyG
-	exec ":"linenumber
-endfunc
-nmap yp :call YankPage() <Enter>
-map <c-a> ggVG
-
-map <Leader>n <plug>NERDTreeTabsToggle<CR>
-com! UT call UndotreeToggle()
-
-
-" ************************************************************************
-" B E G I N  A U T O C O M M A N D S
-"
-if has("autocmd")
-
-    " Enable file type detection.
-    " Use the default filetype settings, so that mail gets 'tw' set to 72,
-    " 'cindent' is on in C files, etc.
-    " Also load indent files, to automatically do language-dependent indenting.
-    filetype plugin indent on
-
-    " When editing a file, always jump to the last known cursor position.
-    " Don't do it when the position is invalid or when inside an event handler
-    " (happens when dropping a file on gvim).
-    autocmd BufReadPost *
-     \ if line("'\"") > 0 && line("'\"") <= line("$") |
-      \   exe "normal g`\"" |
-       \ endif
-
-    " Normally don't automatically format 'text' as it is typed, only do this
-    " with comments, at 79 characters.
-    autocmd BufNewFile,BufEnter *.c,*.h,*.java,*.jsp set formatoptions-=t tw=79
-    
-    set showmatch 
-    map <F5> <Esc>:!clj '%:p'<CR>
-
-    "maksimr/vim-jsbeautify
-        autocmd FileType javascript noremap <buffer>  <c-f> :call JsBeautify()<cr>
-        autocmd FileType html noremap <buffer> <c-f> :call HtmlBeautify()<cr>
-        autocmd FileType css noremap <buffer> <c-f> :call CSSBeautify()<cr>
-
-        autocmd FileType clojure noremap <buffer> <enter> :Eval<cr>
-        autocmd FileType clojurescript noremap <buffer> <enter> :Eval<cr>
-
-endif " has("autocmd")
-
-let g:jsCommand='node'
-let $JS_CMD='node'
-
-"jordwalke/JSXVimHint
-   "let g:syntastic_javascript_checkers = ['jsxhint']
-   "let g:syntastic_javascript_jsxhint_exec = 'jsx-jshint-wrapper'
-
-" ************************************************************************
-" A B B R E V I A T I O N S 
-"
-"abbr #e  ************************************************************************/
-"iab #-># #########################################################################
-
-" Date/Time stamps
-    " %a - Day of the week
-    " %b - Month
-    " %d - Day of the month
-    " %Y - Year
-    " %H - Hour
-    " %M - Minute
-    " %S - Seconds
-    " %Z - Time Zone
-    "
-    " abbreviation to manually enter a timestamp. Just type YTS in insert mode
-    iab YTS <C-R>=TimeStamp()<CR>
-    iab YDATETIME <c-r>=strftime(": %a %b %d, %Y %H:%M:%S %Z")<cr>
-
-set diffopt+=vertical
-autocmd StdinReadPre * let s:std_in=1
-
-" In case you don't use a terminal
-if has('gui_running')
-    set textwidth=78 "78 character width lines
-    set lines=52
-    set cmdheight=2 " 2 for the status line.
-    set columns=110 " add columns for the Project plugin
-    set mouse=a " enable use of mouse
-    let html_use_css=1 " for the TOhtml command
-endif
-if has("gui")
-    " set the gui options to:
-    "   g: grey inactive menu items
-    "   m: display menu bar
-    "   r: display scrollbar on right side of window
-    "   b: display scrollbar at bottom of window
-    "   t: enable tearoff menus on Win32
-    "   T: enable toolbar on Win32
-    set go=gmr
-    set guifont=Courier
-endif
-if &t_Co > 2 || has("gui_running")
-    syntax on     " Switch syntax highlighting on, when the terminal has colors
-    set hlsearch  " Also switch on highlighting the last used search pattern. 
-endi
