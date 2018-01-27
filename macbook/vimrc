@@ -1,6 +1,9 @@
 " encoding dectection
 set fileencodings=utf-8,gb2312,gb18030,gbk,ucs-bom,cp936,latin1
 
+" Eliminating delays on ESC
+set timeoutlen=1000 ttimeoutlen=0
+
 " turn filetype detection off and, even if it's not strictly
 " necessary, disable loading of indent scripts and filetype plugins
 filetype off
@@ -87,7 +90,7 @@ autocmd BufWinEnter * NERDTreeMirror
 let g:ycm_min_num_of_chars_for_completion = 1
 let g:ycm_max_num_candidates = 30
 
-" syntastic
+" vim-syntastic
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
@@ -119,6 +122,10 @@ map <PageUp> :lprevious<CR>
 " autocmd FileType javascript setlocal omnifunc=javascriptcomplete#CompleteJS
 " autocmd FileType python setlocal omnifunc=pythoncomplete#Complete
 " autocmd FileType c setlocal omnifunc=ccomplete#Complete
+
+" Disable beep and flash with an autocmd
+set noerrorbells visualbell t_vb=
+autocmd GUIEnter * set visualbell t_vb=
 
 " ctrlp
 " set wildignore+=*/tmp/*,*.so,*.o,*.a,*.obj,*.swp,*.zip,*.pyc,*.pyo,*.class,.DS_Store  " MacOSX/Linux

@@ -166,3 +166,6 @@ alias myip="ifconfig en0 | awk '{print $3}' | grep -o --max-count=1 '[0-9]*\.[0-
 alias netip="dig +short myip.opendns.com @resolver1.opendns.com"
 alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
 
+search() {
+	grep -r "$1" "."
+}
